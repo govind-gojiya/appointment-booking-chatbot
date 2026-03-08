@@ -5,7 +5,6 @@ import chat_store
 # from agent_ollama import run_agent, get_history
 from agent_huggingface import run_agent, get_history
 
-chat_store.init()
 
 st.set_page_config(
     page_title="Appointment Booking Assistant",
