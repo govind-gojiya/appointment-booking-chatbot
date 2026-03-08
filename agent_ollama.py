@@ -1,7 +1,6 @@
-import os
 from dotenv import load_dotenv
 from langchain_ollama import ChatOllama
-from langchain_core.messages import HumanMessage
+from langchain_core.messages import HumanMessage, AIMessageChunk
 from langchain.agents import create_agent
 from langgraph.checkpoint.memory import MemorySaver
 from tools import ALL_TOOLS
@@ -28,8 +27,10 @@ def run_agent(user_input: str, thread_id: str = "default"):
         "recursion_limit": 20,
         "configurable": {"thread_id": thread_id},
     }
-    result = agent.invoke(
+    for chunk, _ in agent.stream(
         {"messages": [HumanMessage(content=user_input)]},
         config=config,
-    )
-    return result["messages"][-1].content
+        stream_mode="messages",
+    ):
+        if isinstance(chunk, AIMessageChunk) and chunk.content:
+            yield chunk.content

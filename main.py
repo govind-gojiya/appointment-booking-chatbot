@@ -13,14 +13,17 @@ if "thread_id" not in st.session_state:
 if "chat_history" not in st.session_state:
     st.session_state.chat_history = []
 
+for role, message in st.session_state.chat_history:
+    with st.chat_message(role):
+        st.write(message)
+
 user_input = st.chat_input("Type your message...")
 
 if user_input:
+    with st.chat_message("user"):
+        st.write(user_input)
     st.session_state.chat_history.append(("user", user_input))
-    response = run_agent(user_input, st.session_state.thread_id)
-    st.session_state.chat_history.append(("assistant", response))
 
-for role, message in st.session_state.chat_history:
-    avatar = role
-    with st.chat_message(avatar):
-        st.write(message)
+    with st.chat_message("assistant"):
+        response = st.write_stream(run_agent(user_input, st.session_state.thread_id))
+    st.session_state.chat_history.append(("assistant", response))
