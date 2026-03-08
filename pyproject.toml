@@ -9,6 +9,7 @@ dependencies = [
     "langchain-groq>=1.1.2",
     "langchain-huggingface>=1.2.1",
     "langchain-ollama>=1.0.1",
+    "langgraph-checkpoint-sqlite>=3.0.3",
     "python-dateutil>=2.9.0.post0",
     "python-dotenv>=1.2.2",
     "sqlalchemy>=2.0.48",

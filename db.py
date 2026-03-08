@@ -6,7 +6,10 @@ from sqlalchemy import (
     UniqueConstraint
 )
 from sqlalchemy.orm import declarative_base, sessionmaker
-from datetime import datetime
+from datetime import datetime, timezone
+
+def get_current_time():
+    return datetime.now(timezone.utc)
 
 engine = create_engine(
     "sqlite:///appointments.db",
@@ -25,15 +28,22 @@ class Appointment(Base):
     name = Column(String, index=True)
     date = Column(String, index=True)
     time = Column(String, index=True)
-    created_at = Column(DateTime, default=datetime.utcnow)
+    created_at = Column(DateTime, default=get_current_time)
 
     __table_args__ = (
         UniqueConstraint("date", "time", name="unique_slot"),
     )
 
 
-Base.metadata.create_all(bind=engine)
+class Chat(Base):
+    __tablename__ = "chats"
 
+    thread_id = Column(String, primary_key=True)
+    user_name = Column(String, nullable=False, index=True)
+    title = Column(String, nullable=False, default="New Chat")
+    created_at = Column(DateTime, default=get_current_time)
+
+Base.metadata.create_all(bind=engine)
 
 def get_session():
     return SessionLocal()
